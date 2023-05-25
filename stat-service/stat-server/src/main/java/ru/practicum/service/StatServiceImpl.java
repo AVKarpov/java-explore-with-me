@@ -20,6 +20,7 @@ import static ru.practicum.model.HitMapper.toHit;
 public class StatServiceImpl implements StatService {
 
     private final StatRepository statRepository;
+
     @Override
     public void addHit(HitDto hitDto) {
         statRepository.save(toHit(hitDto));
