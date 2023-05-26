@@ -11,9 +11,18 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StatDto {
 
-    private String app; //название сервиса
+    /**
+     * Название сервиса
+     */
+    private String app;
 
-    private String uri; //URI сервиса
+    /**
+     * URI сервиса
+     */
+    private String uri;
 
-    private int hits; //Количество просмотров
+    /**
+     * Количество просмотров
+     */
+    private int hits;
 }

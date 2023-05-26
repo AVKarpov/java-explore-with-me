@@ -7,11 +7,20 @@ import lombok.Setter;
 @Setter
 public class Stat {
 
-    private String app; //название сервиса
+    /**
+     * Название сервиса
+     */
+    private String app;
 
-    private String uri; //URI сервиса
+    /**
+     * URI сервиса
+     */
+    private String uri;
 
-    private Long hits; //Количество просмотров
+    /**
+     * Количество просмотров
+     */
+    private Long hits;
 
     public Stat(String app, String uri, Long hits) {
         this.app = app;

@@ -11,11 +11,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HitDto {
 
-    private String app; //Идентификатор сервиса для которого записывается информация
+    /**
+     * Идентификатор сервиса для которого записывается информация
+     */
+    private String app;
 
-    private String uri; //URI для которого был осуществлен запрос
+    /**
+     * URI для которого был осуществлен запрос
+     */
+    private String uri;
 
-    private String ip; //IP-адрес пользователя, осуществившего запрос
+    /**
+     * IP-адрес пользователя, осуществившего запрос
+     */
+    private String ip;
 
-    private String timestamp; //Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+    /**
+     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+     */
+    private String timestamp;
 }

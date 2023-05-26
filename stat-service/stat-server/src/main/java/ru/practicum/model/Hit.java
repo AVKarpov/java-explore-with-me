@@ -21,17 +21,29 @@ public class Hit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Идентификатор сервиса для которого записывается информация
+     */
     @Column(nullable = false)
-    private String app; //Идентификатор сервиса для которого записывается информация
+    private String app;
 
+    /**
+     * URI для которого был осуществлен запрос
+     */
     @Column(nullable = false)
-    private String uri; //URI для которого был осуществлен запрос
+    private String uri;
 
+    /**
+     * IP-адрес пользователя, осуществившего запрос
+     */
     @Column(nullable = false, length = 40)
-    private String ip; //IP-адрес пользователя, осуществившего запрос
+    private String ip;
 
+    /**
+     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+     */
     @Column(nullable = false)
-    private LocalDateTime timestamp; //Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;
 
     @Override
     public boolean equals(Object o) {
