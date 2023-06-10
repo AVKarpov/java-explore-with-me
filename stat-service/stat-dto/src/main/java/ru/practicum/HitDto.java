@@ -30,4 +30,14 @@ public class HitDto {
      * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
      */
     private String timestamp;
+
+    @Override
+    public String toString() {
+        return "HitDto{" +
+                "app='" + app + '\'' +
+                ", uri='" + uri + '\'' +
+                ", ip='" + ip + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 }

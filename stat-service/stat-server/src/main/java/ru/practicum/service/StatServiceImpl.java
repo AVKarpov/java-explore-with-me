@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.HitDto;
 import ru.practicum.StatDto;
+import ru.practicum.exceptions.ValidationRequestException;
 import ru.practicum.model.Stat;
 import ru.practicum.model.StatMapper;
 import ru.practicum.repository.StatRepository;
@@ -29,6 +30,8 @@ public class StatServiceImpl implements StatService {
     @Override
     public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         List<Stat> stats;
+        if (start.isAfter(end))
+            throw new ValidationRequestException("Date start must be before date end");
         if (unique) {
             if (uris == null) {
                 stats = statRepository.findAllUrisWithUniqueIp(start, end);
