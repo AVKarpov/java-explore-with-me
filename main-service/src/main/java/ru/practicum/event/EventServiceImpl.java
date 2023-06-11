@@ -41,6 +41,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
+        log.info("Добавление нового события: user_id = " + userId + ", event = " + newEventDto);
         //проверить, что существует пользователь с указанным userId
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         //проверить, что существует категория
@@ -64,6 +65,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getEvents(Long userId, int from, int size) {
+        log.info("Получение событий, добавленных текущим пользователем: user_id = " + userId + ", from = " + from +
+                ", size = " + size);
         //проверить, что существует пользователь с указанным userId
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         List<Event> events = eventRepository.findByInitiatorId(userId, PageRequest.of(from / size, size));
@@ -74,6 +77,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventById(Long userId, Long eventId) {
+        log.info("Получение полной информации о событии, добавленном текущим пользователем: user_id = " + userId +
+                ", event_id = " + eventId);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return toEventFullDto(eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId)));
@@ -81,6 +86,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequestDto updateEventUserRequestDto) {
+        log.info("Обновление информации о событии: user_id = " + userId + ", event_id = " + eventId +
+                ", update_event = " + updateEventUserRequestDto);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         if (event.getState() != null && event.getState() != EventState.PENDING && event.getState() != EventState.CANCELED)
@@ -129,6 +136,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequestDto updateEventAdminRequestDto) {
+        log.info("Обновление информации о событии администратором: event_id = " + eventId + ", update_event = " + updateEventAdminRequestDto);
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         if (updateEventAdminRequestDto.getStateAction() != null) {
             if (updateEventAdminRequestDto.getStateAction() == StateAdminAction.PUBLISH_EVENT) {
@@ -187,6 +195,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories,
                                                String rangeStart, String rangeEnd, int from, int size) {
+        log.info("Поиск событий по параметрам: user_ids = " + users + ", states = " + states + ", categories = " + categories +
+                ", rangeStart = " + rangeStart + ", rangeEnd = " + rangeEnd);
         validateEventStates(states);
         List<Event> events = eventRepository.findEvents(users,
                 states, categories,
@@ -204,6 +214,10 @@ public class EventServiceImpl implements EventService {
                                                   String rangeEnd, boolean onlyAvailable, String sort, int from, int size,
                                                   HttpServletRequest request) {
         //сохраняем информацию о том, что был запрос на эндпоинт в сервисе статистики
+        log.info("Поиск опубликованных событий по параметрам: text = " + text + ", categories = " + categories +
+                ", paid = " + paid + ", rangeStart = " + rangeStart + ", rangeEnd = " + rangeEnd +
+                ", onlyAvailable = " + onlyAvailable + ", sort = " + sort + ", from = " + from +
+                ", size = " + size);
         log.info("Client ip: {}", request.getRemoteAddr());
         log.info("Endpoint path: {}", request.getRequestURI());
         statClient.addHit(HitDto.builder()
@@ -255,6 +269,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getPublishedEventById(Long eventId, HttpServletRequest request) {
+        log.info("Получение информации об опубликованном событии по идентификатору: event_id = " + eventId);
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         //получаем количество просмотров из сервиса статистики по уникальному IP

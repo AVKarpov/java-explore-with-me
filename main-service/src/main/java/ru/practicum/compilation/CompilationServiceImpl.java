@@ -29,6 +29,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
+        log.info("Получение подборок событий по параметрам: pinned = " + pinned + ", from = " + from + ", size = " + size);
         List<Compilation> compilations;
         if (pinned != null)
             compilations = compilationRepository.findByPinned(pinned, PageRequest.of(from / size, size));
@@ -41,12 +42,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
+        log.info("Получение подборки событий по его id = " + compId);
         return toCompilationDto(compilationRepository.findById(compId)
                 .orElseThrow(() -> new CompilationNotFoundException(compId)));
     }
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
+        log.info("Добавление новой подборки: compilation = " + newCompilationDto);
         Compilation compilation = toCompilation(newCompilationDto);
         if (newCompilationDto.getEvents() != null) {
             compilation.setEvents(eventRepository.findByIdIn(newCompilationDto.getEvents()));
@@ -56,6 +59,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequestDto updateCompilationRequestDto) {
+        log.info("Обновление информации о подборке: comp_id = " + compId + ", update_compilation = " + updateCompilationRequestDto);
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> new CompilationNotFoundException(compId));
         if (updateCompilationRequestDto.getTitle() != null) {
             String title = updateCompilationRequestDto.getTitle();
@@ -73,6 +77,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteCompilation(Long compId) {
+        log.info("Удаление подборки: comp_id = " + compId);
         compilationRepository.findById(compId).orElseThrow(() -> new CompilationNotFoundException(compId));
         compilationRepository.deleteById(compId);
     }

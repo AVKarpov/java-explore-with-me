@@ -17,8 +17,8 @@ import ru.practicum.user.UserRepository;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.practicum.request.dto.ParticipationRequestMapper.toParticipationRequestDto;
@@ -34,6 +34,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public ParticipationRequestDto createParticipationRequest(Long userId, Long eventId) {
+        log.info("Добавление запроса от текущего пользователя на участие в событии: user_id = " + userId + ", event_id = " + eventId);
         //проверить, что существует пользователь с указанным userId
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         //проверить, что существует событие с указанным eventId
@@ -42,22 +43,22 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         //нельзя добавить повторный запрос (Ожидается код ошибки 409)
         ParticipationRequest existParticipationRequest = participationRequestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (existParticipationRequest != null) {
-            log.info("Error: нельзя добавить повторный запрос");
+            log.info("Error: Пользователь с id = " + userId + " не может добавить повторный запрос с id = " + eventId);
             throw new ForbiddenException("Could not add the same request.");
         }
         //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
         if (event.getInitiator().getId().equals(userId)) {
-            log.info("Error: инициатор события не может добавить запрос на участие в своём событии");
+            log.info("Error: инициатор с id = " + userId + " не может добавить запрос на участие в своём событии с id = " + eventId);
             throw new ForbiddenException("Initiator could not add request to own event.");
         }
         //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
         if (event.getState() != EventState.PUBLISHED) {
-            log.info("Error: нельзя участвовать в неопубликованном событии");
+            log.info("Error: Пользователь с id = " + userId + " не может участвовать в неопубликованном событии с id = " + eventId);
             throw new ForbiddenException("Could not participate in non-published event.");
         }
         //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
         if (event.getParticipantLimit() != 0 && participationRequestRepository.countByEventIdAndStatus(eventId, ParticipationRequestStatus.CONFIRMED) >= event.getParticipantLimit()) {
-            log.info("Error: достигнут лимит запросов на участие");
+            log.info("Error: Пользователь с id = " + userId + " не может участвовать в событии с id = " + eventId + ", так как достигнут лимит запросов на участие");
             throw new ForbiddenException("Reach participant limit.");
         }
 
@@ -78,6 +79,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public ParticipationRequestDto cancelParticipationRequest(Long userId, Long requestId) {
+        log.info("Отмена своего запроса на участие в событии: user_id = " + userId + ", request_id = " + requestId);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ParticipationRequest requestToUpdate = participationRequestRepository.getReferenceById(requestId);
         requestToUpdate.setStatus(ParticipationRequestStatus.CANCELED);
@@ -86,33 +88,38 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public List<ParticipationRequestDto> getParticipationRequests(Long userId) {
+        log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях: user_id = " + userId);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        List<ParticipationRequest> requests = participationRequestRepository.findByRequesterId(userId);
+        List<Optional<ParticipationRequest>> requests = participationRequestRepository.findByRequesterId(userId);
 
-        return requests != null ?
-                requests.stream()
+        return requests.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(ParticipationRequestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ParticipationRequestDto> getParticipationRequestsForUserEvent(Long userId, Long eventId) {
+        log.info("Получение информации о запросах на участие в событии текущего пользователя: user_id = " + userId +
+                ", event_id = " + eventId);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         List<Event> userEvents = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        List<ParticipationRequest> requests = participationRequestRepository.findByEventIn(userEvents);
+        List<Optional<ParticipationRequest>> requests = participationRequestRepository.findByEventIn(userEvents);
 
-        return requests != null ?
-                requests.stream()
+        return requests.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(ParticipationRequestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public EventRequestStatusUpdateResultDto changeParticipationRequestsStatus(Long userId, Long eventId,
                                                                                EventRequestStatusUpdateRequestDto eventRequestStatusUpdateRequest) {
+        log.info("Изменение статуса (подтверждена, отменена) заявок на участие в событии текущего пользователя: " +
+                "user_id = " + userId + ", event_id = " + eventId + ", новый статус = " + eventRequestStatusUpdateRequest);
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         List<ParticipationRequest> requests = participationRequestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());

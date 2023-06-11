@@ -1,9 +1,6 @@
 package ru.practicum.compilation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,6 +11,7 @@ import java.util.List;
  * Подборка событий
  */
 @Data
+@ToString
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor

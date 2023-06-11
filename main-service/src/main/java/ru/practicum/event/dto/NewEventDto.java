@@ -1,9 +1,6 @@
 package ru.practicum.event.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.practicum.location.dto.LocationDto;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Data
+@ToString
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor

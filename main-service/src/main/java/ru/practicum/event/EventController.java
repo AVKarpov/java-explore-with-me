@@ -59,7 +59,7 @@ public class EventController {
     }
 
     /**
-     ** Получение полной информации о событии, добавленном текущим пользователем
+     ** Обновление информации о событии
      * @param userId id текущего пользователя
      * @param eventId id события
      * @param updateEventUserRequestDto Новые данные события

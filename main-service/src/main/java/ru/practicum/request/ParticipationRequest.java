@@ -30,6 +30,7 @@ public class ParticipationRequest {
     private User requester;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private ParticipationRequestStatus status;
 
     @Column

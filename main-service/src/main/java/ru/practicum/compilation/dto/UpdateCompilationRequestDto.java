@@ -1,9 +1,6 @@
 package ru.practicum.compilation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +9,7 @@ import java.util.List;
  * Если поле в запросе не указано (равно null) - значит изменение этих данных не треубется.
  */
 @Data
+@ToString
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor

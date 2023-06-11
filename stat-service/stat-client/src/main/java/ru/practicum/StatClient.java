@@ -1,6 +1,5 @@
 package ru.practicum;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,7 +15,6 @@ public class StatClient {
     private final String serverUrl;
     private final RestTemplate rest;
 
-    @Autowired
     public StatClient(@Value("${stat-server.url}") String serverUrl) {
         this.rest = new RestTemplate();
         this.serverUrl = serverUrl;
