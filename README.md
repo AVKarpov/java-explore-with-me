@@ -1,2 +1,2 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+Pull request for feature Comments - https://github.com/AVKarpov/java-explore-with-me/pull/5
