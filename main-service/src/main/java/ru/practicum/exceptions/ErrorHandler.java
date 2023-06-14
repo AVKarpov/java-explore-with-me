@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.category.CategoryController;
+import ru.practicum.comment.CommentController;
 import ru.practicum.compilation.CompilationController;
 import ru.practicum.event.EventController;
 import ru.practicum.request.ParticipationRequestController;
@@ -21,7 +22,8 @@ import java.time.format.DateTimeFormatter;
         CategoryController.class,
         EventController.class,
         ParticipationRequestController.class,
-        CompilationController.class})
+        CompilationController.class,
+        CommentController.class})
 public class ErrorHandler {
 
     private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
