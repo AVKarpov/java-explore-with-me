@@ -1,3 +1,5 @@
+DELETE FROM comments;
+ALTER TABLE comments ALTER COLUMN id RESTART WITH 1;
 DELETE FROM event_compilation;
 DELETE FROM compilations;
 ALTER TABLE compilations ALTER COLUMN id RESTART WITH 1;
